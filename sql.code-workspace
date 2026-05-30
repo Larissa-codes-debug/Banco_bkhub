@@ -1,0 +1,10 @@
+{
+	"folders": [
+		{
+			"path": "sql"
+		},
+		{
+			"path": "sqlseed.py"
+		}
+	]
+}
