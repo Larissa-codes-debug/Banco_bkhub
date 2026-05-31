@@ -13,6 +13,63 @@ class Cliente(BaseModel):
     email: str
     cpf: str
     telefone: str
+    
+class Hotel(BaseModel):
+    nome: str
+    cidade: str
+    pais: str
+    estrelas: int
+    endereco: str
+
+
+class Quarto(BaseModel):
+    id_hotel: int
+    numero_quarto: str
+    tipo: str
+    capacidade: int
+    preco_por_noite: float
+
+
+class Aeroporto(BaseModel):
+    codigo: str
+    nome: str
+    cidade: str
+    pais: str
+
+
+class Voo(BaseModel):
+    numero_voo: str
+    id_aeroporto_origem: int
+    id_aeroporto_destino: int
+    horario_partida: str
+    horario_chegada: str
+    total_assentos: int
+    assentos_disponiveis: int
+    preco: float
+
+
+class ReservaHotel(BaseModel):
+    id_cliente: int
+    id_quarto: int
+    check_in: str
+    check_out: str
+    status: str
+    preco_total: float
+
+
+class ReservaVoo(BaseModel):
+    id_cliente: int
+    id_voo: int
+    numero_assento: str
+    status: str
+
+
+class Pagamento(BaseModel):
+    tipo_reserva: str
+    id_reserva: int
+    valor: float
+    status: str
+    metodo_pagamento: str
 
 def conectar():
     return psycopg2.connect(
@@ -476,3 +533,231 @@ def deletar_cliente(id_cliente: int):
     return {
         "mensagem": "Cliente excluído com sucesso"
     }
+
+@app.post("/hoteis")
+def criar_hotel(hotel: Hotel):
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO hoteis
+        (nome, cidade, pais, estrelas, endereco)
+        VALUES (%s,%s,%s,%s,%s)
+    """, (
+        hotel.nome,
+        hotel.cidade,
+        hotel.pais,
+        hotel.estrelas,
+        hotel.endereco
+    ))
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return {"mensagem": "Hotel criado com sucesso"}
+
+@app.put("/hoteis/{id_hotel}")
+def atualizar_hotel(id_hotel: int, hotel: Hotel):
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE hoteis
+        SET nome=%s,
+            cidade=%s,
+            pais=%s,
+            estrelas=%s,
+            endereco=%s
+        WHERE id=%s
+    """, (
+        hotel.nome,
+        hotel.cidade,
+        hotel.pais,
+        hotel.estrelas,
+        hotel.endereco,
+        id_hotel
+    ))
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return {"mensagem": "Hotel atualizado"}
+
+@app.delete("/hoteis/{id_hotel}")
+def deletar_hotel(id_hotel: int):
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "DELETE FROM hoteis WHERE id=%s",
+        (id_hotel,)
+    )
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return {"mensagem": "Hotel removido"}
+
+@app.post("/quartos")
+def criar_quarto(quarto: Quarto):
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO quartos
+        (
+            id_hotel,
+            numero_quarto,
+            tipo,
+            capacidade,
+            preco_por_noite
+        )
+        VALUES (%s,%s,%s,%s,%s)
+    """, (
+        quarto.id_hotel,
+        quarto.numero_quarto,
+        quarto.tipo,
+        quarto.capacidade,
+        quarto.preco_por_noite
+    ))
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return {"mensagem": "Quarto criado"}
+
+@app.put("/quartos/{id_quarto}")
+def atualizar_quarto(id_quarto: int, quarto: Quarto):
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE quartos
+        SET
+            id_hotel=%s,
+            numero_quarto=%s,
+            tipo=%s,
+            capacidade=%s,
+            preco_por_noite=%s
+        WHERE id=%s
+    """, (
+        quarto.id_hotel,
+        quarto.numero_quarto,
+        quarto.tipo,
+        quarto.capacidade,
+        quarto.preco_por_noite,
+        id_quarto
+    ))
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return {"mensagem": "Quarto atualizado"}
+
+@app.delete("/quartos/{id_quarto}")
+def deletar_quarto(id_quarto: int):
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "DELETE FROM quartos WHERE id=%s",
+        (id_quarto,)
+    )
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return {"mensagem": "Quarto removido"}
+
+@app.post("/aeroportos")
+def criar_aeroporto(aeroporto: Aeroporto):
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO aeroportos
+        (
+            codigo,
+            nome,
+            cidade,
+            pais
+        )
+        VALUES (%s,%s,%s,%s)
+    """, (
+        aeroporto.codigo,
+        aeroporto.nome,
+        aeroporto.cidade,
+        aeroporto.pais
+    ))
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return {"mensagem": "Aeroporto criado"}
+
+@app.put("/aeroportos/{id_aeroporto}")
+def atualizar_aeroporto(id_aeroporto: int, aeroporto: Aeroporto):
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE aeroportos
+        SET codigo=%s,
+            nome=%s,
+            cidade=%s,
+            pais=%s
+        WHERE id=%s
+    """, (
+        aeroporto.codigo,
+        aeroporto.nome,
+        aeroporto.cidade,
+        aeroporto.pais,
+        id_aeroporto
+    ))
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return {"mensagem": "Aeroporto atualizado"}
+
+@app.delete("/aeroportos/{id_aeroporto}")
+def deletar_aeroporto(id_aeroporto: int):
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "DELETE FROM aeroportos WHERE id=%s",
+        (id_aeroporto,)
+    )
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return {"mensagem": "Aeroporto removido"}
