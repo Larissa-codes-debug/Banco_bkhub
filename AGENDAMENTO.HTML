@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookingHub - Agendamento</title>
+
+    <style>
+        body{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: lab(51.3% 22.02 -68.68);
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        h1{
+            color: white;
+            text-align: center;
+        }
+
+        fieldset{
+            width: 550px;
+            padding: 50px;
+            border-radius: 10px;
+            background-color: white;
+            border: none;
+        }
+
+        h2{
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1e293b;
+        }
+
+        label, input, select{
+            display: block;
+            width: 100%;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        input, select{
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #999;
+        }
+
+        input[type="submit"]{
+            background-color: rgb(37, 37, 233);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        input[type="submit"]:hover{
+            background-color: hwb(182 5% 21%);
+        }
+
+        p{
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>BookingHub</h1>
+
+    <form action="#" method="post">
+        <fieldset>
+
+            <h2>Agendar Reserva</h2>
+
+            <label for="origem">Origem</label>
+            <input type="text" id="origem" placeholder="Ex: Fortaleza">
+
+            <label for="destino">Destino</label>
+            <input type="text" id="destino" placeholder="Ex: São Paulo">
+
+            <label for="data_ida">Data do voo</label>
+            <input type="date" id="data_ida">
+
+            <label for="horario">Horário do voo</label>
+            <input type="time" id="horario">
+
+            <label for="hotel">Hotel</label>
+            <select id="hotel">
+                <option value="">Selecione um hotel</option>
+                <option>Hotel Central</option>
+                <option>Hotel Premium</option>
+                <option>Hotel Econômico</option>
+                <option>Resort BookingHub</option>
+            </select>
+
+            <label for="quarto">Tipo de quarto</label>
+            <select id="quarto">
+                <option value="">Selecione o quarto</option>
+                <option>Quarto individual</option>
+                <option>Quarto casal</option>
+                <option>Quarto família</option>
+                <option>Suíte premium</option>
+            </select>
+
+            <label for="camas">Quantidade de camas</label>
+            <input type="number" id="camas" min="1" max="10" placeholder="Ex: 2">
+
+            <label for="dias">Quantidade de dias</label>
+            <input type="number" id="dias" min="1" placeholder="Ex: 5">
+
+            <label for="passageiros">Quantidade de passageiros</label>
+            <input type="number" id="passageiros" min="1" placeholder="Ex: 2">
+
+            <input type="submit" value="Confirmar Agendamento">
+
+        </fieldset>
+    </form>
+
+    <p>BookingHub: Plataforma de Reservas © LARISSA E INGRID 2026</p>
+
+</body>
+</html>
