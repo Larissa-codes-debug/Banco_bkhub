@@ -2,11 +2,16 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import psycopg2
 
+# Criação da aplicação FastAPI
+# Define título, descrição e versão da API
+
 app = FastAPI(
     title="BookingHub API",
     description="API para gerenciamento de hotéis, voos, reservas e pagamentos",
     version="1.0"
 )
+
+# Modelos de cliente, hoteis, quartos aeroportos e voos utilizado nos métodos POST e PUT
 
 class Cliente(BaseModel):
     nome: str
@@ -71,6 +76,8 @@ class Pagamento(BaseModel):
     status: str
     metodo_pagamento: str
 
+
+#Conexão com PostgreSQL
 def conectar():
     return psycopg2.connect(
         host="localhost",
@@ -85,9 +92,8 @@ def home():
     return {"mensagem": "BookingHub API funcionando"}
 
 
-# ==========================
 # CLIENTES
-# ==========================
+# Retorna todos os clientes cadastrados
 
 @app.get("/clientes")
 def listar_clientes():
@@ -108,6 +114,7 @@ def listar_clientes():
 
     return dados
 
+# Busca um cliente específico pelo ID
 
 @app.get("/clientes/{id_cliente}")
 def buscar_cliente(id_cliente: int):
@@ -129,9 +136,7 @@ def buscar_cliente(id_cliente: int):
     return dado
 
 
-# ==========================
 # HOTEIS
-# ==========================
 
 @app.get("/hoteis")
 def listar_hoteis():
@@ -173,9 +178,7 @@ def buscar_hotel(id_hotel: int):
     return dado
 
 
-# ==========================
 # QUARTOS
-# ==========================
 
 @app.get("/quartos")
 def listar_quartos():
@@ -217,9 +220,7 @@ def buscar_quarto(id_quarto: int):
     return dado
 
 
-# ==========================
 # AEROPORTOS
-# ==========================
 
 @app.get("/aeroportos")
 def listar_aeroportos():
@@ -260,10 +261,7 @@ def buscar_aeroporto(id_aeroporto: int):
 
     return dado
 
-
-# ==========================
 # VOOS
-# ==========================
 
 @app.get("/voos")
 def listar_voos():
@@ -305,9 +303,7 @@ def buscar_voo(id_voo: int):
     return dado
 
 
-# ==========================
 # RESERVAS HOTEL
-# ==========================
 
 @app.get("/reservas_hotel")
 def listar_reservas_hotel():
@@ -349,9 +345,7 @@ def buscar_reserva_hotel(id_reserva: int):
     return dado
 
 
-# ==========================
 # RESERVAS VOO
-# ==========================
 
 @app.get("/reservas_voo")
 def listar_reservas_voo():
@@ -393,9 +387,7 @@ def buscar_reserva_voo(id_reserva: int):
     return dado
 
 
-# ==========================
 # PAGAMENTOS
-# ==========================
 
 @app.get("/pagamentos")
 def listar_pagamentos():
@@ -436,9 +428,8 @@ def buscar_pagamento(id_pagamento: int):
 
     return dado
 
-# ==========================
 # CRIAR CLIENTE
-# ==========================
+# Insere um novo cliente no banco
 
 @app.post("/clientes")
 def criar_cliente(cliente: Cliente):
@@ -471,9 +462,8 @@ def criar_cliente(cliente: Cliente):
     }
 
 
-# ==========================
 # ATUALIZAR CLIENTE
-# ==========================
+# Atualiza os dados de um cliente existente
 
 @app.put("/clientes/{id_cliente}")
 def atualizar_cliente(
@@ -510,9 +500,8 @@ def atualizar_cliente(
     }
 
 
-# ==========================
 # EXCLUIR CLIENTE
-# ==========================
+# Remove um cliente do banco de dados
 
 @app.delete("/clientes/{id_cliente}")
 def deletar_cliente(id_cliente: int):
@@ -761,3 +750,392 @@ def deletar_aeroporto(id_aeroporto: int):
     conn.close()
 
     return {"mensagem": "Aeroporto removido"}
+
+@app.post("/voos")
+def criar_voo(voo: Voo):
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO voos (
+            numero_voo,
+            id_aeroporto_origem,
+            id_aeroporto_destino,
+            horario_partida,
+            horario_chegada,
+            total_assentos,
+            assentos_disponiveis,
+            preco
+        )
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
+    """, (
+        voo.numero_voo,
+        voo.id_aeroporto_origem,
+        voo.id_aeroporto_destino,
+        voo.horario_partida,
+        voo.horario_chegada,
+        voo.total_assentos,
+        voo.assentos_disponiveis,
+        voo.preco
+    ))
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return {"mensagem": "Voo criado com sucesso"}
+
+@app.put("/voos/{id_voo}")
+def atualizar_voo(id_voo: int, voo: Voo):
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE voos
+        SET
+            numero_voo=%s,
+            id_aeroporto_origem=%s,
+            id_aeroporto_destino=%s,
+            horario_partida=%s,
+            horario_chegada=%s,
+            total_assentos=%s,
+            assentos_disponiveis=%s,
+            preco=%s
+        WHERE id=%s
+    """, (
+        voo.numero_voo,
+        voo.id_aeroporto_origem,
+        voo.id_aeroporto_destino,
+        voo.horario_partida,
+        voo.horario_chegada,
+        voo.total_assentos,
+        voo.assentos_disponiveis,
+        voo.preco,
+        id_voo
+    ))
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return {"mensagem": "Voo atualizado"}
+
+@app.delete("/voos/{id_voo}")
+def deletar_voo(id_voo: int):
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "DELETE FROM voos WHERE id=%s",
+        (id_voo,)
+    )
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return {"mensagem": "Voo removido"}
+
+@app.post("/reservas_hotel")
+def criar_reserva_hotel(reserva: ReservaHotel):
+
+    conn = conectar()
+    conn.set_session(
+    isolation_level="SERIALIZABLE"
+    )
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM reservas_hotel
+        WHERE id_quarto = %s
+        AND status = 'confirmed'
+        AND (
+            check_in < %s
+            AND check_out > %s
+        )
+        """, (
+        reserva.id_quarto,
+        reserva.check_out,
+        reserva.check_in
+    ))
+
+    ocupado = cursor.fetchone()[0]
+
+    if ocupado > 0:
+        cursor.close()
+        conn.close()
+
+        raise HTTPException(
+            status_code=400,
+            detail="Quarto já reservado para essa data"
+        )
+
+    cursor.execute("""
+        INSERT INTO reservas_hotel (
+            id_cliente,
+            id_quarto,
+            check_in,
+            check_out,
+            status,
+            preco_total
+        )
+        VALUES (%s,%s,%s,%s,%s,%s)
+    """, (
+        reserva.id_cliente,
+        reserva.id_quarto,
+        reserva.check_in,
+        reserva.check_out,
+        reserva.status,
+        reserva.preco_total
+    ))
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return {"mensagem": "Reserva de hotel criada"}
+
+@app.put("/reservas_hotel/{id_reserva}")
+def atualizar_reserva_hotel(
+    id_reserva: int,
+    reserva: ReservaHotel
+):
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE reservas_hotel
+        SET
+            id_cliente=%s,
+            id_quarto=%s,
+            check_in=%s,
+            check_out=%s,
+            status=%s,
+            preco_total=%s
+        WHERE id=%s
+    """, (
+        reserva.id_cliente,
+        reserva.id_quarto,
+        reserva.check_in,
+        reserva.check_out,
+        reserva.status,
+        reserva.preco_total,
+        id_reserva
+    ))
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return {"mensagem": "Reserva atualizada"}
+
+@app.delete("/reservas_hotel/{id_reserva}")
+def deletar_reserva_hotel(id_reserva: int):
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "DELETE FROM reservas_hotel WHERE id=%s",
+        (id_reserva,)
+    )
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return {"mensagem": "Reserva removida"}
+
+@app.post("/reservas_voo")
+def criar_reserva_voo(reserva: ReservaVoo):
+
+    conn = conectar()
+    conn.set_session(
+    isolation_level="SERIALIZABLE"
+    )
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+    SELECT COUNT(*)
+    FROM reservas_voo
+    WHERE id_voo = %s
+      AND numero_assento = %s
+""", (
+    reserva.id_voo,
+    reserva.numero_assento
+))
+    
+    ocupado = cursor.fetchone()[0]
+
+    if ocupado > 0:
+        raise HTTPException(
+        status_code=400,
+        detail="Assento já foi reservado"
+    )
+
+    cursor.execute("""
+        INSERT INTO reservas_voo (
+            id_cliente,
+            id_voo,
+            numero_assento,
+            status
+        )
+        VALUES (%s,%s,%s,%s)
+    """, (
+        reserva.id_cliente,
+        reserva.id_voo,
+        reserva.numero_assento,
+        reserva.status
+    ))
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return {"mensagem": "Reserva de voo criada"}
+
+@app.put("/reservas_voo/{id_reserva}")
+def atualizar_reserva_voo(
+    id_reserva: int,
+    reserva: ReservaVoo
+):
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE reservas_voo
+        SET
+            id_cliente=%s,
+            id_voo=%s,
+            numero_assento=%s,
+            status=%s
+        WHERE id=%s
+    """, (
+        reserva.id_cliente,
+        reserva.id_voo,
+        reserva.numero_assento,
+        reserva.status,
+        id_reserva
+    ))
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return {"mensagem": "Reserva de voo atualizada"}
+
+@app.delete("/reservas_voo/{id_reserva}")
+def deletar_reserva_voo(id_reserva: int):
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "DELETE FROM reservas_voo WHERE id=%s",
+        (id_reserva,)
+    )
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return {"mensagem": "Reserva removida"}
+
+@app.post("/pagamentos")
+def criar_pagamento(pagamento: Pagamento):
+    
+
+    conn = conectar()
+    conn.set_session
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO pagamentos (
+            tipo_reserva,
+            id_reserva,
+            valor,
+            status,
+            metodo_pagamento
+        )
+        VALUES (%s,%s,%s,%s,%s)
+    """, (
+        pagamento.tipo_reserva,
+        pagamento.id_reserva,
+        pagamento.valor,
+        pagamento.status,
+        pagamento.metodo_pagamento
+    ))
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return {"mensagem": "Pagamento criado"}
+
+@app.put("/pagamentos/{id_pagamento}")
+def atualizar_pagamento(
+    id_pagamento: int,
+    pagamento: Pagamento
+):
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE pagamentos
+        SET
+            tipo_reserva=%s,
+            id_reserva=%s,
+            valor=%s,
+            status=%s,
+            metodo_pagamento=%s
+        WHERE id=%s
+    """, (
+        pagamento.tipo_reserva,
+        pagamento.id_reserva,
+        pagamento.valor,
+        pagamento.status,
+        pagamento.metodo_pagamento,
+        id_pagamento
+    ))
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return {"mensagem": "Pagamento atualizado"}
+
+@app.delete("/pagamentos/{id_pagamento}")
+def deletar_pagamento(id_pagamento: int):
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "DELETE FROM pagamentos WHERE id=%s",
+        (id_pagamento,)
+    )
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return {"mensagem": "Pagamento removido"}
