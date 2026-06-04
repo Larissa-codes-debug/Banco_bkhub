@@ -1,4 +1,3 @@
-# biblioteca de dados faker
 import psycopg2
 from faker import Faker
 import random
@@ -10,7 +9,7 @@ conn = psycopg2.connect(
     host="localhost",
     database="banco_bkhub",
     user="postgres",
-    password="miss23"
+    password="1810"
 )
 
 cursor = conn.cursor()
