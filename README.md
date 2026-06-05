@@ -43,7 +43,25 @@ GET /hoteis/disponiveis
 GET /clientes/{id}/reservas
 GET /relatorios/ocupacao
 POST /reservas/voo
-POST /reservas/hotel
-POST /pagamentos
-DELETE /reservas/{id}
-POST /test/falha-transacao
+
+
+
+| Consulta | Tempo Antes                         | Tempo Depois |
+| -------- | ----------------------------------- | ------------ |
+| C1       | 0,077 ms                            | 0,058 ms     |
+| C2       | 1,4 ms (estimado do plano anterior) | 1,171 ms     |
+| C3       | 0,098 ms                            | 0,145 ms     |
+| C4       | 0,138 ms                            | 0,574 ms     |
+
+
+
+
+
+| Índice                                | Tipo   | Justificativa                    |
+| ------------------------------------- | ------ | -------------------------------- |
+| idx_flights_departure_time            | B-Tree | Busca por intervalo de datas     |
+| idx_rooms_hotel                       | B-Tree | Busca por igualdade (`hotel_id`) |
+| idx_flight_reservations_customer      | B-Tree | Filtro por cliente               |
+| idx_payments_reservation              | B-Tree | Junções por tipo e id da reserva |
+| idx_flight_reservations_flight_status | B-Tree | Filtro por voo e status          |
+| idx_airports_city                     | B-Tree | Busca por cidade                 |
