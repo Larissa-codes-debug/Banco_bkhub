@@ -16,3 +16,6 @@
 "  Buffers: shared hit=8"
 "Planning Time: 1.236 ms"
 "Execution Time: 0.279 ms"
+
+A consulta C1 busca voos disponíveis filtrando cidade de origem, cidade de destino, intervalo de datas e assentos disponíveis. O plano atual apresentou Seq Scan na tabela voos e também em aeroportos.
+O índice criado foi do tipo B-Tree, pois ele é adequado para filtros de igualdade, intervalos de data e ordenação por horario_partida.
