@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookingHub - Login</title>
+
+    <style>
+
+        h1{
+            text-align: center;
+            color: white;
+        }
+
+        body{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: lab(51.3% 22.02 -68.68);
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        h2{
+            text-align: center;
+            margin-bottom: 40px;
+            color: #1e293b;
+        }
+        fieldset{
+            width: 500px;
+            padding: 120px;
+            border-radius: 10px;
+            background-color: white;
+            border: none;
+            
+        }
+        label, input{
+            display: block;
+            width: 100%;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        input{
+            padding: 20px;
+            border-radius: 5px;
+            border: 1px solid lab(lightness a b alpha);
+            color: black;
+        }
+
+        input[type="submit"]{
+            background-color:rgb(37, 37, 233);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        p{
+            color: white;
+            margin-top: 5px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <h1>BookingHub</h1>
+    <form action="#" method="post">
+        <fieldset>
+
+            <h2>Login da Plataforma</h2>
+
+            <label for="email">E-mail</label>
+            <input type="email" id="email" placeholder="Digite seu e-mail" required>
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" placeholder="Digite sua senha" required>
+
+            <input type="submit" value="Entrar">
+
+        </fieldset>
+
+    </form>
+
+    <p>BookingHub: Plataforma de Reservas ©LARISSA E INGRID 2026</p>
+
+</body>
+</html>
+
