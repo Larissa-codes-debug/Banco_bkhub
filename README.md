@@ -2,7 +2,7 @@
 - Larissa Lopes
 - Ingrid Silveira
 
-## Como executar o bando de dados
+## Como executar o banco de dados
 1. Restaurar o banco de dados.
 2. Instalar dependências.
 3. Executar:
