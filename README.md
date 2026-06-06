@@ -1,4 +1,15 @@
-Desconsidere os arquivos soltos, para ter a versão completa utilize as pastas.
+## Integrantes
+- Larissa Lopes
+- Ingrid Silveira
+
+## Como executar
+1. Restaurar o banco de dados.
+2. Instalar dependências.
+3. Executar:
+   uvicorn main:app --reload
+
+## Repositório
+https://github.com/Larissa-codes-debug/Banco_bkhub
 
 Startup,indicações do projeto e orientações. 
 
